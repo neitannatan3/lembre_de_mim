@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Para o Meu Amor! 😍</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@300;400;700&display=swap');
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            text-align: center;
+            background: linear-gradient(to top right, #ffebee, #ffcdd2); /* Degradê suave de rosa */
+            color: #d81b60; /* Rosa mais escuro para o texto */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center; /* Centraliza horizontalmente também */
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Para não ter barra de rolagem se os corações saírem da tela */
+            position: relative; /* Para os corações flutuantes */
+        }
+        .box {
+            background: rgba(255, 255, 255, 0.9); /* Fundo branco semi-transparente */
+            padding: 30px;
+            border-radius: 25px; /* Bordas mais arredondadas */
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2); /* Sombra mais suave */
+            margin: 20px; /* Margem para não colar nas bordas do mobile */
+            max-width: 90%; /* Ocupa mais espaço em telas pequenas */
+            position: relative;
+            z-index: 10; /* Garante que a caixa fique acima dos corações */
+            border: 3px solid #ff80ab; /* Borda rosa fofa */
+        }
+        h1 {
+            font-family: 'Pacifico', cursive; /* Fonte cursiva para o título */
+            font-size: 36px; /* Tamanho maior para o título */
+            color: #e91e63; /* Rosa vibrante */
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 18px;
+            color: #ad1457; /* Texto um pouco mais escuro */
+            margin-bottom: 25px;
+        }
+        #mensagem {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 24px;
+            font-weight: 700; /* Mais negrito */
+            color: #c2185b; /* Um rosa forte para a mensagem */
+            margin: 30px 0;
+            min-height: 60px; /* Garante espaço para a mensagem */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.4;
+        }
+        .status {
+            font-size: 14px;
+            color: #880e4f; /* Um tom mais escuro para o status */
+            margin-top: 20px;
+        }
+        #timer {
+            font-weight: bold;
+            font-size: 16px;
+            color: #ff80ab; /* Rosa mais claro para o timer */
+        }
+
+        /* Efeitos de corações flutuantes */
+        .heart {
+            position: absolute;
+            font-size: 2em;
+            color: #ffb6c1; /* Corações rosa claro */
+            animation: float 10s ease-in infinite;
+            opacity: 0;
+            pointer-events: none; /* Garante que não interfira com cliques */
+            z-index: 1; /* Fica atrás do conteúdo */
+        }
+
+        /* Animação dos corações */
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-1000px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Media Queries para ajustar em telas muito pequenas, se necessário */
+        @media (max-width: 480px) {
+            h1 { font-size: 30px; }
+            p { font-size: 16px; }
+            #mensagem { font-size: 20px; min-height: 50px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <h1>Oi, meu amor! ❤️💋</h1>
+        <p>Deixe essa página aberta. Vou te lembrar o quanto você é especial, sempre.</p>
+        
+        <div id="mensagem">Aguardando o primeiro carinho...</div>
+        
+        <p class="status">Próxima mensagem em: <span id="timer">1:00</span></p>
+    </div>
+
+    <script>
+        const frases = [
+            "Você é incrível! Sou muito sortudo de ter você. 💖",
+            "Bom trabalho, meu amor! Você arrasa em tudo que faz. ✨",
+            "Tô pensando em você agora, com um sorriso no rosto. 😊",
+            "Já te falaram que você está LINDA hoje? VOCÊ ESTÁ LINDAAA! 🥰",
+            "Sabia que você não sai da minha mente?! 🥹",
+            "No momento não posso te abraçar, mas é o que eu mais queria agora! 🥹❤️",
+            "Não esquece de beber água! Se cuida. 💧😘",
+            "Já tomou seu chá, moça?? 💧",
+            "Seu sorriso ilumina o meu dia, sabia?!. É o meu favorito! 🥰",
+            "Estou com saudade de você. 🥺",
+            "Eu te admiro muito, em cada detalhe. Você me inspira! 🏆",
+            "Tô com saudades dos seus abraços e beijos! 🥹💋",
+            "Eu vejo você longe e quero você perto...🎵",
+            "Você é a pessoa mais linda que eu conheço, por dentro e por fora. ❤️",
+            "Obrigado por ser você. Você é um presente na minha vida.🎁",
+            "Que o seu dia seja tão maravilhoso quanto você! ✨",
+            "Quando o Sol vai, você vem pra competir com as estrelas...🎵"
+        ];
+
+        let tempoRestante = 1 * 60; // Alterado para 1 minuto (60 segundos) para teste
+        const duracaoTotal = 2 * 60 * 60; // 2 horas em segundos
+        let tempoDecorrido = 0;
+
+        // Função para criar corações flutuantes
+        function criarCoracao() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '💖'; // Pode ser '❤️', '💋', '🌟'
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 5 + 5 + 's'; // 5 a 10 segundos
+            heart.style.animationDelay = Math.random() * 5 + 's'; // Atraso aleatório para aparecerem em momentos diferentes
+            document.body.appendChild(heart);
+
+            // Remover o coração depois que ele sumir da tela para não sobrecarregar
+            setTimeout(() => {
+                heart.remove();
+            }, 10000); // Remove depois de 10 segundos (duração da animação)
+        }
+
+        // Gera corações continuamente
+        setInterval(criarCoracao, 500); // Cria um coração a cada 0.5 segundo
+
+        function atualizarMensagem() {
+            const index = Math.floor(Math.random() * frases.length);
+            document.getElementById('mensagem').innerText = frases[index];
+            
+            // Toca um som de notificação padrão do sistema (opcional)
+            const audio = new Audio('https://www.soundjay.com/buttons/beep-07a.mp3');
+            audio.play();
+        }
+
+        function contador() {
+            if (tempoDecorrido >= duracaoTotal) {
+                // Parar de enviar mensagens após 2 horas
+                document.getElementById('mensagem').innerText = "Meu tempo de mimar você por aqui acabou por hoje! Mas meu amor é eterno. Te amo! ❤️";
+                document.getElementById('timer').innerText = "Fim do mimo virtual.";
+                clearInterval(intervaloPrincipal);
+                return;
+            }
+
+            let minutos = Math.floor(tempoRestante / 60);
+            let segundos = tempoRestante % 60;
+            
+            document.getElementById('timer').innerText = 
+                `${minutos}:${segundos < 10 ? '0' : ''}${segundos}`;
+
+            if (tempoRestante <= 0) {
+                atualizarMensagem();
+                tempoRestante = 1 * 60; // Reinicia para 1 minuto
+            } else {
+                tempoRestante--;
+            }
+            tempoDecorrido++; // Incrementa o tempo decorrido total
+        }
+
+        // Inicia a primeira mensagem e o cronômetro
+        atualizarMensagem();
+        const intervaloPrincipal = setInterval(contador, 1000); // Guarda o intervalo para poder pará-lo
+    </script>
+</body>
+</html>
